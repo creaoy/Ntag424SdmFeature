@@ -10,6 +10,7 @@ import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY1;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY2;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY3;
 import static net.bplearning.ntag424.constants.Permissions.ACCESS_KEY4;
+import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY;
 import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SYSTEM_IDENTIFIER_FOR_DIVERSIFYING;
 
@@ -216,28 +217,37 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
 
                     writeToUiAppend(output, "Authentication with FACTORY ACCESS_KEY 0");
                     // what happens when we choose the wrong authentication scheme ?
-                    success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                    byte [] auth_key = Ntag424.FACTORY_KEY;
+
+                    success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, auth_key);
                     if (success) {
-                        writeToUiAppend(output, "AES Authentication SUCCESS");
+                        writeToUiAppend(output, "AES Authentication SUCCESS DEFAULT KEY");
                     } else {
-                        // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
-                        if (dnaC.getLastCommandResult().status2 == PERMISSION_DENIED) {
-                            // try to run the LRP authentication
-                            success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
-                            if (success) {
-                                writeToUiAppend(output, "LRP Authentication SUCCESS");
-                                isLrpAuthenticationMode = true;
+                        auth_key = MASTER_APPLICATION_KEY;
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, auth_key);
+                        if (success) {
+                            writeToUiAppend(output, "AES Authentication SUCCESS MASTER KEY");
+                        }
+                        else {
+                            // if the returnCode is '919d' = permission denied the tag is in LRP mode authentication
+                            if (dnaC.getLastCommandResult().status2 == PERMISSION_DENIED) {
+                                // try to run the LRP authentication
+                                success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                                if (success) {
+                                    writeToUiAppend(output, "LRP Authentication SUCCESS");
+                                    isLrpAuthenticationMode = true;
+                                } else {
+                                    writeToUiAppend(output, "LRP Authentication FAILURE");
+                                    writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
+                                    writeToUiAppend(output, "Authentication not possible, Operation aborted");
+                                    return;
+                                }
                             } else {
-                                writeToUiAppend(output, "LRP Authentication FAILURE");
+                                // any other error, print the error code and return
+                                writeToUiAppend(output, "AES Authentication FAILURE");
                                 writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
-                                writeToUiAppend(output, "Authentication not possible, Operation aborted");
                                 return;
                             }
-                        } else {
-                            // any other error, print the error code and return
-                            writeToUiAppend(output, "AES Authentication FAILURE");
-                            writeToUiAppend(output, "returnCode is " + Utils.byteToHex(dnaC.getLastCommandResult().status2));
-                            return;
                         }
                     }
 
@@ -446,7 +456,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
 
                     // silent authenticate with Access Key 0, should work
                     if (!isLrpAuthenticationMode) {
-                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
+                        success = AESEncryptionMode.authenticateEV2(dnaC, ACCESS_KEY0, auth_key);
                     } else {
                         success = LRPEncryptionMode.authenticateLRP(dnaC, ACCESS_KEY0, Ntag424.FACTORY_KEY);
                     }
@@ -529,7 +539,7 @@ public class TagOverviewActivity extends AppCompatActivity implements NfcAdapter
                             // did we had a successful authentication with this key ? with FACTORY or CUSTOM key ?
 
                             if (!isLrpAuthenticationMode) {
-                                success = AESEncryptionMode.authenticateEV2(dnaC, file02RAccess, Ntag424.FACTORY_KEY);
+                                success = AESEncryptionMode.authenticateEV2(dnaC, file02RAccess, auth_key);
                             } else {
                                 success = LRPEncryptionMode.authenticateLRP(dnaC, file02RAccess, Ntag424.FACTORY_KEY);
                             }

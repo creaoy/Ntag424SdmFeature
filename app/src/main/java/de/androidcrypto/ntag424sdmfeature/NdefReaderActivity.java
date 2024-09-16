@@ -2,6 +2,7 @@ package de.androidcrypto.ntag424sdmfeature;
 
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_3;
 import static de.androidcrypto.ntag424sdmfeature.Constants.APPLICATION_KEY_4;
+import static de.androidcrypto.ntag424sdmfeature.Constants.URL_DOMAIN;
 import static de.androidcrypto.ntag424sdmfeature.Constants.DOUBLE_DIVIDER;
 import static de.androidcrypto.ntag424sdmfeature.Constants.MASTER_APPLICATION_KEY_FOR_DIVERSIFYING;
 import static de.androidcrypto.ntag424sdmfeature.Constants.SINGLE_DIVIDER;
@@ -257,11 +258,11 @@ public class NdefReaderActivity extends AppCompatActivity implements NfcAdapter.
                 }
 
                 // now we are trying to parse the content of the message
-                // we expecting a header 'https://sdm.nfcdeveloper.com/'
+                // we expecting a header 'https://claim.phygitalmining.com/'
                 // followed by 'tag?' or 'tagpt?'
                 String fullPayload = "";
-                if (ndefText.startsWith("https://sdm.nfcdeveloper.com/")) {
-                    fullPayload = ndefText.replace("https://sdm.nfcdeveloper.com/", "");
+                if (ndefText.startsWith(URL_DOMAIN)) {
+                    fullPayload = ndefText.replace(URL_DOMAIN, "");
                 } else {
                     writeToUiAppend(output, "The Backend Server URL is not matching, aborted");
                     return;

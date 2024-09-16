@@ -299,7 +299,7 @@ public class EncryptedFileSunDiversifiedKeysActivity extends AppCompatActivity i
                         sdmSettings.sdmOptionUid = true;
                         sdmSettings.sdmOptionReadCounter = true;
                     }
-                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://claim.phygitalmining.com/tag?picc_data={PICC}&enc={FILE}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
                     } catch (IOException e) {

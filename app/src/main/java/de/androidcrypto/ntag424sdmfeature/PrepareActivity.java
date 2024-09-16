@@ -298,7 +298,7 @@ public class PrepareActivity extends AppCompatActivity implements NfcAdapter.Rea
                     NdefTemplateMaster master = new NdefTemplateMaster();
                     master.usesLRP = isLrpAuthenticationMode;
                     master.fileDataLength = 0; // no (encrypted) file data
-                    ndefRecord = master.generateNdefTemplateFromUrlString("https://sdm.nfcdeveloper.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
+                    ndefRecord = master.generateNdefTemplateFromUrlString("https://claim.phygitalmining.com/tagpt?uid={UID}&ctr={COUNTER}&cmac={MAC}", sdmSettings);
                     try {
                         WriteData.run(dnaC, NDEF_FILE_NUMBER, ndefRecord, 0);
                     } catch (IOException e) {

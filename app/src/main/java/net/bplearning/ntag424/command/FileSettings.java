@@ -24,8 +24,8 @@ public class FileSettings {
 
 	// SDM 
 	public SDMSettings sdmSettings = new SDMSettings();
-	
-	public static FileSettings decodeFromData(byte[] data) {
+
+    public static FileSettings decodeFromData(byte[] data) {
 		FileSettings settings = new FileSettings();
 
 		byte fileType = data[0];

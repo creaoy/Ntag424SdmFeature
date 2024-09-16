@@ -375,9 +375,9 @@ public class EncryptedFileSunActivity extends AppCompatActivity implements NfcAd
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return ZonedDateTime
                     .now(ZoneId.systemDefault())
-                    .format(DateTimeFormatter.ofPattern("dd.MM.uuuu HH:mm:ss"));
+                    .format(DateTimeFormatter.ofPattern("dd.MM.uuuu HH:mm"));
         } else {
-            return new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+            return new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date());
         }
     }
 
